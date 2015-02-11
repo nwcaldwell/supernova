@@ -22,7 +22,7 @@ Navigate to your list of apps and select SuperNova. Optionally, you can create a
 
 ## *Development Team*<a name="Team"/>
 
-We, Abin John and Nathan Caldwell, developed SuperNova as our Senior Project at the University of Florida during the Spring 2015 semester. Dr. Corey Toler-Franklin servered as our advisor and Dr. Mark Schmalz served as the course coordinator.
+We, Abin John and Nathan Caldwell, developed SuperNova as our Senior Project at the University of Florida during the Spring 2015 semester. Dr. Corey Toler-Franklin served as our advisor and Dr. Mark Schmalz served as the course coordinator.
 
 - [@abinjohn](https://github.com/abinjohn)
 - [@nwcaldwell](https://github.com/nwcaldwell)
