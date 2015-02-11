@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$0.99"
+        android:id="@+id/button14"
+        android:layout_marginRight="74dp"
+        android:layout_marginEnd="74dp"
+        android:layout_marginTop="44dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$1.99"
+        android:id="@+id/button15"
+        android:layout_below="@+id/button14"
+        android:layout_alignLeft="@+id/button14"
+        android:layout_alignStart="@+id/button14"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$2.99"
+        android:id="@+id/button16"
+        android:layout_below="@+id/button15"
+        android:layout_alignLeft="@+id/button15"
+        android:layout_alignStart="@+id/button15"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$3.99"
+        android:id="@+id/button17"
+        android:layout_below="@+id/button16"
+        android:layout_alignLeft="@+id/button16"
+        android:layout_alignStart="@+id/button16"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$4.99"
+        android:id="@+id/button18"
+        android:layout_below="@+id/button17"
+        android:layout_alignLeft="@+id/button17"
+        android:layout_alignStart="@+id/button17"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Like Us!"
+        android:id="@+id/button19"
+        android:layout_below="@+id/button18"
+        android:layout_alignLeft="@+id/button18"
+        android:layout_alignStart="@+id/button18"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tweet!"
+        android:id="@+id/button20"
+        android:layout_below="@+id/button19"
+        android:layout_alignLeft="@+id/button19"
+        android:layout_alignStart="@+id/button19"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="1,000 Coins"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/button14"
+        android:layout_toStartOf="@+id/button14"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignBaseline="@+id/button14"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="5,000 Coins"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/button15"
+        android:layout_toStartOf="@+id/button15"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignBaseline="@+id/button15"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="10,000 Coins"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/button16"
+        android:layout_toStartOf="@+id/button16"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignBaseline="@+id/button16"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="50,000 Coins"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/button17"
+        android:layout_toStartOf="@+id/button17"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignBaseline="@+id/button17"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="100,000 Coins"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/button18"
+        android:layout_toStartOf="@+id/button18"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignBaseline="@+id/button18"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="1,000 Coins"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/button19"
+        android:layout_toStartOf="@+id/button19"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignBaseline="@+id/button19"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="1,000 Coins"
+        android:id="@+id/textView"
+        android:layout_toLeftOf="@+id/button20"
+        android:layout_toStartOf="@+id/button20"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignBaseline="@+id/button20"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:id="@+id/button21"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:onClick="goToMainActivity"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Store"
+        android:id="@+id/button22"
+        android:layout_alignTop="@+id/button21"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/button21"
+        android:layout_toEndOf="@+id/button21"
+        android:onClick="goToStoreActivity"/>
+
+</RelativeLayout>
