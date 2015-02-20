@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="Green">#ffbee6ac</color>
+    <color name="Beige">#ffc3be8b</color>
+    <color name="Yellow">#ffebe57a</color>
+
+    <color name="ColorPrimary">#ffe64b06</color>
+    <color name="ColorPrimaryDark">#ffe6e430</color>
+    <color name="tabsScrollColor">#ff0014cf</color>
+</resources>
