@@ -31,7 +31,7 @@ public class StoreActivity extends ActionBarActivity {
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[]={"Home","Ship","Time","Worp"};
+    CharSequence Titles[]={"Ship","Shield","Time","Warp"};
     int Numboftabs = 4;
 
     @Override
@@ -67,43 +67,7 @@ public class StoreActivity extends ActionBarActivity {
 
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
-
-        // instantiate our ItemAdapter class
-        m_adapter = new StoreItemAdapter(this, R.layout.store_item, m_parts);
-       // setListAdapter(m_adapter);
-
-        // here we are defining our runnable thread.
-        viewParts = new Runnable(){
-            public void run(){
-                handler.sendEmptyMessage(0);
-            }
-        };
-
-        // here we call the thread we just defined - it is sent to the handler below.
-        Thread thread =  new Thread(null, viewParts, "StoreItemThread");
-        thread.start();
     }
-
-    private Handler handler = new Handler()
-    {
-        public void handleMessage(Message msg)
-        {
-            // create some objects
-            // here is where you could also request data from a server
-            // and then create objects from that data.
-            m_parts.add(new StoreItem("Bronze Shield", 0, 10000));
-            m_parts.add(new StoreItem("Silver Shield", 1, 30000));
-            m_parts.add(new StoreItem("Gold Shield", 2, 50000));
-            m_parts.add(new StoreItem("Platinum Shield", 3, 100000));
-            m_parts.add(new StoreItem("Force Field", 4, 250000));
-            m_parts.add(new StoreItem("Brick Wall", 5, 1000000));
-
-            m_adapter = new StoreItemAdapter(StoreActivity.this, R.layout.store_item, m_parts);
-
-            // display the list.
-            //setListAdapter(m_adapter);
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

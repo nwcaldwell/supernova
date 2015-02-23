@@ -7,5 +7,6 @@
     <string name="get_more">Get More!</string>
     <string name="home">Home</string>
     <string name="upgrade">Upgrade!</string>
+    <string name="title_activity_main_activity2">MainActivity2</string>
 
 </resources>
