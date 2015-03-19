@@ -3,8 +3,8 @@
     <color name="Green">#ffbee6ac</color>
     <color name="Beige">#ffc3be8b</color>
     <color name="Yellow">#ffebe57a</color>
-    <color name="Test">#ff133b64</color>
-    <color name="ColorPrimary">#ff696969</color>
+    <color name="Test">#ff484b89</color>
+    <color name="ColorPrimary">#ff864889</color>
 
     <color name="Tabs">#ffe64b06</color> <!-- ColorPrimary #ffe64b06-->
     <color name="ColorPrimaryDark">#ffe6e430</color>

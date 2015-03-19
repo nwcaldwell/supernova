@@ -8,5 +8,6 @@
     <string name="home">Home</string>
     <string name="upgrade">Upgrade!</string>
     <string name="title_activity_main_activity2">MainActivity2</string>
+    <string name="title_activity_mercury">MercuryActivity</string>
 
 </resources>
