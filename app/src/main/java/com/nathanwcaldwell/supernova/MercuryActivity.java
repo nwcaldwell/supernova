@@ -1,24 +1,43 @@
 package com.nathanwcaldwell.supernova;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MercuryActivity extends ActionBarActivity {
+public class MercuryActivity extends Activity {
+
+    private GameView gameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mercury);
+        gameView = new GameView(this);
+        setContentView(new GameView(this));
     }
 
 
     @Override
+    public void onPause(){
+        super.onPause();
+
+        if (gameView != null){
+            if (gameView.gameLoopThread != null){
+                gameView.gameLoopThread.running = false;
+            }
+        }
+
+        finish();
+
+    }
+/*
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_mercury, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -36,4 +55,5 @@ public class MercuryActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 }

@@ -42,7 +42,6 @@ public class Tab2 extends ListFragment {
             // here is where you could also request data from a server
             // and then create objects from that data.
             m_parts.add(new StoreItem("Bronze Shield", 0, 10000));
-            m_parts.add(new StoreItem("Bronze Shield", 0, 10000));
             m_parts.add(new StoreItem("Silver Shield", 1, 30000));
             m_parts.add(new StoreItem("Gold Shield", 2, 50000));
             m_parts.add(new StoreItem("Platinum Shield", 3, 100000));
