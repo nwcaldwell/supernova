@@ -1,6 +1,7 @@
 package com.nathanwcaldwell.supernova;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,6 +18,7 @@ import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Handler;
@@ -36,10 +38,15 @@ public class GameView extends SurfaceView {
     public static int coinsCollected = 0;
     int xx = 0;
 
+    public static int timerCoins = 0;
+    private static SharedPreferences prefs;
+    private String saveScore = "Highscore";
+
     Bitmap playerbmp;
     Bitmap coinbmp;
     Bitmap groundbmp;
     Bitmap meteorbmp;
+    Bitmap backgroundbmp;
 
     private List<Player> player = new ArrayList<Player>();
     private List<Coin> coins = new ArrayList<Coin>();
@@ -48,6 +55,11 @@ public class GameView extends SurfaceView {
 
     public GameView (Context context){
         super(context);
+
+        String spackage = "com.example.john4abin.endlessrunner1";
+        prefs = context.getSharedPreferences(spackage,context.MODE_PRIVATE);
+
+        highscore = prefs.getInt(saveScore, 0);
 
         gameLoopThread = new GameLoopThread(this);
 
@@ -67,13 +79,20 @@ public class GameView extends SurfaceView {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
+            gameLoopThread.running = false;
+                score = 0;
+                coinsCollected = 0;
 
+            prefs.edit().putInt(saveScore,highscore).commit();
             }
         });
         playerbmp = BitmapFactory.decodeResource(getResources(),R.drawable.ship);
         coinbmp = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
         meteorbmp = BitmapFactory.decodeResource(getResources(), R.drawable.meteor);
         groundbmp = BitmapFactory.decodeResource(getResources(), R.drawable.ground);
+        backgroundbmp = BitmapFactory.decodeResource(getResources(),R.drawable.planet);
+
+       player.add(new Player(GameView.this,playerbmp,435,50));
 
 //        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.background);
 //        Canvas mCanvas = canvas;
@@ -81,7 +100,7 @@ public class GameView extends SurfaceView {
 //            mCanvas.drawBitmap(mBitmap, 0, 0, null);
 //        }
 
-
+/*
         Timer time = new Timer();
 
         time.schedule(new TimerTask() {
@@ -94,7 +113,7 @@ public class GameView extends SurfaceView {
             }
         }, 5000);
 
-    /*
+    
         player.add(new Player(this,playerbmp,435,50));
 
         coins.add(new Coin(this, coinbmp,500,700));
@@ -102,8 +121,6 @@ public class GameView extends SurfaceView {
 
         meteors.add(new Meteor(this, meteorbmp, 450, 450));
     */
-
-        player.add(new Player(GameView.this,playerbmp,435,50));
     }
 
 
@@ -134,10 +151,55 @@ public class GameView extends SurfaceView {
     public void updateScore(){
         score += 2;
 
+        deleteGround();
+        updateObstacles();
         if (score > highscore){
          highscore = score;
         }
     }
+
+    public void updateObstacles(){
+        timerCoins++;
+        if (timerCoins == 20) {
+            Random position = new Random();
+            int x = position.nextInt(101);
+            Random item = new Random();
+            int y = item.nextInt(3);
+            int z = 0;
+
+            if (y == 0){
+                z = -GameView.this.getWidth() / 5;
+            }else if (y == 1){
+                z = 0;
+            }else if (y == 2){
+                z = GameView.this.getWidth() / 5;
+            }
+
+            if (x % 2 == 0){
+                meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth()/2) + z, 20));
+
+            }else if (x % 9 == 0){
+                coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) + z, 20));
+
+            }//else if (x == 2){
+//                coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) , 20));
+//            }
+
+
+//            switch (x) {
+//                case (0):
+//                    coins.add(new Coin(GameView.this, coinbmp, GameView.this.getWidth() / 2, 200));
+//
+//                case (1):
+//                    coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) - (GameView.this.getWidth() / 5), 400));
+//
+//                case (2):
+//                    coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) + (GameView.this.getWidth() / 5), 600));
+//            }
+            timerCoins = 0;
+        }
+    }
+
 
     public void addGround(){
 
@@ -161,17 +223,17 @@ public class GameView extends SurfaceView {
 
     @Override
     protected void onDraw(Canvas canvas){
+
+        canvas.drawBitmap(backgroundbmp, 0, 0, null);
+
         updateScore();
-        canvas.drawColor(Color.BLUE);
-//        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.background);
-//        Canvas mCanvas = canvas;
-//        if (mBitmap != null) {
-//            mCanvas.drawBitmap(mBitmap, 0, 0, null);
-//        }
+        //canvas.drawColor(Color.BLUE);
+
         addGround();
-        deleteGround();
+      //  deleteGround();
         Paint textpaint = new Paint();
         textpaint.setTextSize(32);
+        textpaint.setColor(Color.WHITE);
 
         canvas.drawText("Score: " + String.valueOf(score), 0,32, textpaint);
         canvas.drawText("High Score: " + String.valueOf(highscore), 0, 64, textpaint);

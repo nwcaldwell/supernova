@@ -59,6 +59,8 @@ public class Player {
                     //vspeed = jumppower;
                     x -= (display_width/5);
                     counter--;
+                    Meteor.updatexSpeed(-10);
+                    Coin.updatexSpeed(-10);
                 }
             }
         }else {
@@ -67,6 +69,9 @@ public class Player {
                     //vspeed = jumppower;
                     x += (display_width/5);
                     counter++;
+                    Meteor.updatexSpeed(10);
+                    Coin.updatexSpeed(10);
+
                 }
             }
         }

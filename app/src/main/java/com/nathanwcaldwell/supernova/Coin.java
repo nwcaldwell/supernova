@@ -18,7 +18,7 @@ public class Coin {
     private int mcolumnWidth = 1;
     private int mcolumnHeight = 1;
     private int width,height;
-    private int xSpeed = -GameView.globalxSpeed;
+    private static int xSpeed = -GameView.globalxSpeed;
     private Rect playerr;
     private Rect coinr;
 
@@ -31,6 +31,10 @@ public class Coin {
         this.width = bmp.getWidth();
         this.height = bmp.getHeight()/mcolumnHeight;
 
+    }
+
+    public static void updatexSpeed(int xSpeed1){
+        xSpeed += xSpeed1;
     }
 
     public void update(){

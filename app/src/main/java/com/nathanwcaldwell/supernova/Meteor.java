@@ -19,7 +19,7 @@ public class Meteor {
     private int mcolumnWidth = 1;
     private int mcolumnHeight = 1;
     private int width,height;
-    private int xSpeed = -GameView.globalxSpeed;
+    private static int xSpeed = -GameView.globalxSpeed;
     private Rect playerr;
     private Rect meteorr;
 
@@ -32,7 +32,9 @@ public class Meteor {
         this.height = bmp.getHeight()/mcolumnHeight;
     }
 
-
+    public static void updatexSpeed(int xSpeed1){
+        xSpeed += xSpeed1;
+    }
 
     public void update(){
         y -= xSpeed;
@@ -59,4 +61,6 @@ public class Meteor {
         update();
         canvas.drawBitmap(bmp, x, y, null);
     }
+
+
 }
