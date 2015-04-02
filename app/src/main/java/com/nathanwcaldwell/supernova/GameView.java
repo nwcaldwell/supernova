@@ -33,6 +33,10 @@ public class GameView extends SurfaceView {
     private SurfaceHolder holder;
     public static int globalxSpeed = 15;
 
+    //-1 = left
+    //0 = middle
+    //1 = right
+    public static int score_position = 0;
     public static int score = 0;
     public static int highscore = 1000;
     public static int coinsCollected = 0;
@@ -149,8 +153,13 @@ public class GameView extends SurfaceView {
     }
 
     public void updateScore(){
-        score += 2;
-
+        if (score_position < 0){
+            score += 4;
+        }else if (score_position == 0) {
+            score += 2;
+        } else if (score_position > 0){
+            score++;
+        }
         deleteGround();
         updateObstacles();
         if (score > highscore){
