@@ -1,5 +1,6 @@
 package com.nathanwcaldwell.supernova;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-public class PauseActivity extends ActionBarActivity {
+public class PauseActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

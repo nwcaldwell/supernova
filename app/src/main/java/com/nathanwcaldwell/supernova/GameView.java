@@ -36,7 +36,7 @@ public class GameView extends SurfaceView {
 
     Resources r = getResources();
     final float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
-    final float dp20 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, r.getDisplayMetrics());
+    final float dp18 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, r.getDisplayMetrics());
 
     GameLoopThread gameLoopThread;
     private SurfaceHolder holder;
@@ -68,7 +68,7 @@ public class GameView extends SurfaceView {
     private List<Ground> ground = new ArrayList<Ground>();
     private List<Meteor> meteors = new ArrayList<>();
 
-    Region pauseRegion = new Region((int)(this.width()-pausebmp.getWidth()-dp16), (int)dp16, (int)(this.width()-pausebmp.getWidth()-dp16+32), (int)dp16+32);
+    Region pauseRegion;
 
     public GameView (Context context){
         super(context);
@@ -120,7 +120,9 @@ public class GameView extends SurfaceView {
         backgroundbmp = BitmapFactory.decodeResource(getResources(),R.drawable.planet);
         resizedBackgroundBMP = Bitmap.createScaledBitmap(backgroundbmp, width, height, false);
 
-        player.add(new Player(GameView.this,playerbmp,435,50));
+        player.add(new Player(GameView.this,playerbmp,size.x/2,(int)(size.y*1.0/4)));
+
+        pauseRegion = new Region((int)(this.width()-pausebmp.getWidth()-dp16), (int)(2*dp16), (int)(this.width()-pausebmp.getWidth()-dp16+32), (int)(2*dp16+32));
 
 //        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.background);
 //        Canvas mCanvas = canvas;
@@ -169,10 +171,15 @@ public class GameView extends SurfaceView {
         display.getSize(size);
         int disp_width = size.x;
 
+        Log.d("TOUCH", String.valueOf(touch_x) + " " + String.valueOf(touch_y));
+
         if(pauseRegion.contains((int)touch_x, (int)touch_y))
         {
+            Log.d("TOUCHPAUSE", String.valueOf(touch_x) + " " + String.valueOf(touch_y));
+            gameLoopThread.setRunning(false);
             Intent intent = new Intent(this.getContext(), PauseActivity.class);
             this.getContext().startActivity(intent);
+
         }
 
         //determine if the touch was on the left or right hand side of the screen
@@ -285,12 +292,12 @@ public class GameView extends SurfaceView {
         //addGround();
       //  deleteGround();
         Paint textpaint = new Paint();
-        textpaint.setTextSize(dp20);
+        textpaint.setTextSize(dp18);
         textpaint.setColor(Color.WHITE);
 
-        canvas.drawText("Score: " + String.valueOf(score), 0, dp20, textpaint);
-        canvas.drawText("High Score: " + String.valueOf(highscore), 0, 2*dp20, textpaint);
-        canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 3*dp20, textpaint);
+        canvas.drawText("Score: " + String.valueOf(score), 0, dp18, textpaint);
+        canvas.drawText("High Score: " + String.valueOf(highscore), 0, 2*dp18, textpaint);
+        canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 3*dp18, textpaint);
 
 //        for (Ground gground: ground){
 //            gground.onDraw(canvas);
@@ -308,6 +315,9 @@ public class GameView extends SurfaceView {
                 meteors.remove(i);
 
                 score = 1;
+                gameLoopThread.setRunning(false);
+                Intent intent = new Intent(this.getContext(), PauseActivity.class);
+                this.getContext().startActivity(intent);
             }
         }
 
