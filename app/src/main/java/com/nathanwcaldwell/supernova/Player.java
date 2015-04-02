@@ -61,6 +61,7 @@ public class Player {
                     counter--;
                     Meteor.updatexSpeed(-10);
                     Coin.updatexSpeed(-10);
+                    GameView.score_position--;
                 }
             }
         }else {
@@ -71,7 +72,7 @@ public class Player {
                     counter++;
                     Meteor.updatexSpeed(10);
                     Coin.updatexSpeed(10);
-
+                    GameView.score_position++;
                 }
             }
         }
