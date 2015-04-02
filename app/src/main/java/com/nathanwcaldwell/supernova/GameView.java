@@ -204,11 +204,13 @@ public class GameView extends SurfaceView {
 
     public void updateObstacles(){
         timerCoins++;
-        if (timerCoins == 20) {
+        if (timerCoins == 40) {
             Random position = new Random();
             int x = position.nextInt(101);
             Random item = new Random();
             int y = item.nextInt(3);
+            Random number = new Random();
+            int num = number.nextInt(10);
             int z = 0;
 
             if (y == 0){
@@ -220,7 +222,14 @@ public class GameView extends SurfaceView {
             }
 
             if (x % 2 == 0){
-                meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth()/2) + z, 20));
+                if (num < 5){
+                    meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth()/2) + z, 20));
+                }else if (num >= 5 && num < 8) {
+                    meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth() / 2) + z, 20));
+                    meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth() / 2) + z, 20));
+                } else if (num == 9){
+                    meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth()/2) + z, 20));
+                }
             }else if (x % 9 == 0){
                 coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) + z, 20));
 
