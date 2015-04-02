@@ -1,7 +1,9 @@
 package com.nathanwcaldwell.supernova;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,7 +11,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -29,6 +34,10 @@ import java.util.logging.LogRecord;
  */
 public class GameView extends SurfaceView {
 
+    Resources r = getResources();
+    final float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
+    final float dp20 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, r.getDisplayMetrics());
+
     GameLoopThread gameLoopThread;
     private SurfaceHolder holder;
     public static int globalxSpeed = 15;
@@ -47,16 +56,20 @@ public class GameView extends SurfaceView {
     Bitmap groundbmp;
     Bitmap meteorbmp;
     Bitmap backgroundbmp;
+    Bitmap resizedBackgroundBMP;
+    Bitmap pausebmp;
 
     private List<Player> player = new ArrayList<Player>();
     private List<Coin> coins = new ArrayList<Coin>();
     private List<Ground> ground = new ArrayList<Ground>();
     private List<Meteor> meteors = new ArrayList<>();
 
+    Region pauseRegion = new Region((int)(this.width()-pausebmp.getWidth()-dp16), (int)dp16, (int)(this.width()-pausebmp.getWidth()-dp16+32), (int)dp16+32);
+
     public GameView (Context context){
         super(context);
 
-        String spackage = "com.example.john4abin.endlessrunner1";
+        String spackage = "com.nathanwcaldwell.supernova";
         prefs = context.getSharedPreferences(spackage,context.MODE_PRIVATE);
 
         highscore = prefs.getInt(saveScore, 0);
@@ -86,13 +99,24 @@ public class GameView extends SurfaceView {
             prefs.edit().putInt(saveScore,highscore).commit();
             }
         });
+
         playerbmp = BitmapFactory.decodeResource(getResources(),R.drawable.ship);
         coinbmp = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
         meteorbmp = BitmapFactory.decodeResource(getResources(), R.drawable.meteor);
         groundbmp = BitmapFactory.decodeResource(getResources(), R.drawable.ground);
-        backgroundbmp = BitmapFactory.decodeResource(getResources(),R.drawable.planet);
+        pausebmp = BitmapFactory.decodeResource(getResources(), R.drawable.pause_button);
 
-       player.add(new Player(GameView.this,playerbmp,435,50));
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        backgroundbmp = BitmapFactory.decodeResource(getResources(),R.drawable.planet);
+        resizedBackgroundBMP = Bitmap.createScaledBitmap(backgroundbmp, width, height, false);
+
+        player.add(new Player(GameView.this,playerbmp,435,50));
 
 //        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.background);
 //        Canvas mCanvas = canvas;
@@ -123,18 +147,37 @@ public class GameView extends SurfaceView {
     */
     }
 
+    public int width() {
+        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.x;
+    }
 
+    public int height() {
+        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.y;
+    }
 
 
     public boolean onTouchEvent(MotionEvent e){
         //get the x position of the user touch
         int touch_x = (int)e.getX();
+        int touch_y = (int)e.getY();
 
         //stuff to get the size of the screen in pixels
         Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int disp_width = size.x;
+
+        if(pauseRegion.contains((int)touch_x, (int)touch_y))
+        {
+            Intent intent = new Intent(this.getContext(), PauseActivity.class);
+            this.getContext().startActivity(intent);
+        }
 
         //determine if the touch was on the left or right hand side of the screen
         boolean left = false;
@@ -177,7 +220,6 @@ public class GameView extends SurfaceView {
 
             if (x % 2 == 0){
                 meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth()/2) + z, 20));
-
             }else if (x % 9 == 0){
                 coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) + z, 20));
 
@@ -224,24 +266,25 @@ public class GameView extends SurfaceView {
     @Override
     protected void onDraw(Canvas canvas){
 
-        canvas.drawBitmap(backgroundbmp, 0, 0, null);
+        canvas.drawBitmap(resizedBackgroundBMP, 0, 0, null);
+        canvas.drawBitmap(pausebmp, this.width()-pausebmp.getWidth()-dp16, dp16, null);
 
         updateScore();
         //canvas.drawColor(Color.BLUE);
 
-        addGround();
+        //addGround();
       //  deleteGround();
         Paint textpaint = new Paint();
-        textpaint.setTextSize(32);
+        textpaint.setTextSize(dp20);
         textpaint.setColor(Color.WHITE);
 
-        canvas.drawText("Score: " + String.valueOf(score), 0,32, textpaint);
-        canvas.drawText("High Score: " + String.valueOf(highscore), 0, 64, textpaint);
-        canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 96, textpaint);
+        canvas.drawText("Score: " + String.valueOf(score), 0, dp20, textpaint);
+        canvas.drawText("High Score: " + String.valueOf(highscore), 0, 2*dp20, textpaint);
+        canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 3*dp20, textpaint);
 
-        for (Ground gground: ground){
-            gground.onDraw(canvas);
-        }
+//        for (Ground gground: ground){
+//            gground.onDraw(canvas);
+//        }
         for (Player pplayer: player){
             pplayer.onDraw(canvas);
         }
