@@ -10,5 +10,6 @@
     <string name="title_activity_main_activity2">MainActivity2</string>
     <string name="title_activity_mercury">MercuryActivity</string>
     <string name="title_activity_pause">PauseActivity</string>
+    <string name="title_activity_game_over">GameOverActivity</string>
 
 </resources>

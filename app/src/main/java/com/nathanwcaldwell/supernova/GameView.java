@@ -37,6 +37,9 @@ public class GameView extends SurfaceView {
     Resources r = getResources();
     final float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
     final float dp18 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, r.getDisplayMetrics());
+    final float dp24 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, r.getDisplayMetrics());
+    final float dp32 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, r.getDisplayMetrics());
+
 
     GameLoopThread gameLoopThread;
     private SurfaceHolder holder;
@@ -69,6 +72,10 @@ public class GameView extends SurfaceView {
     private List<Meteor> meteors = new ArrayList<>();
 
     Region pauseRegion;
+
+    boolean[] leftMeteors = new boolean[2];
+    boolean[] middleMeteors = new boolean[2];
+    boolean[] rightMeteors = new boolean[2];
 
     public GameView (Context context){
         super(context);
@@ -122,7 +129,7 @@ public class GameView extends SurfaceView {
 
         player.add(new Player(GameView.this,playerbmp,size.x/2,(int)(size.y*1.0/4)));
 
-        pauseRegion = new Region((int)(this.width()-pausebmp.getWidth()-dp16), (int)(2*dp16), (int)(this.width()-pausebmp.getWidth()-dp16+32), (int)(2*dp16+32));
+        pauseRegion = new Region((int)(this.width()-pausebmp.getWidth()-dp24), 0, (int)(this.width()-pausebmp.getWidth()+dp24), (int)(dp32+16));
 
 //        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.background);
 //        Canvas mCanvas = canvas;
@@ -171,11 +178,8 @@ public class GameView extends SurfaceView {
         display.getSize(size);
         int disp_width = size.x;
 
-        Log.d("TOUCH", String.valueOf(touch_x) + " " + String.valueOf(touch_y));
-
         if(pauseRegion.contains((int)touch_x, (int)touch_y))
         {
-            Log.d("TOUCHPAUSE", String.valueOf(touch_x) + " " + String.valueOf(touch_y));
             gameLoopThread.setRunning(false);
             Intent intent = new Intent(this.getContext(), PauseActivity.class);
             this.getContext().startActivity(intent);
@@ -307,7 +311,7 @@ public class GameView extends SurfaceView {
 
                 score = 1;
                 gameLoopThread.setRunning(false);
-                Intent intent = new Intent(this.getContext(), PauseActivity.class);
+                Intent intent = new Intent(this.getContext(), GameOverActivity.class);
                 this.getContext().startActivity(intent);
             }
         }
