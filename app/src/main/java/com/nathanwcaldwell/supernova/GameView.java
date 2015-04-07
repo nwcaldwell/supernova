@@ -12,8 +12,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -24,30 +22,24 @@ import android.view.WindowManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * Created by john4abin on 3/10/2015.
  */
 public class GameView extends SurfaceView {
 
-    Resources r = getResources();
-    final float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
-    final float dp18 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, r.getDisplayMetrics());
-    final float dp24 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, r.getDisplayMetrics());
-    final float dp32 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, r.getDisplayMetrics());
+    Resources resources = getResources();
 
+    final float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, resources.getDisplayMetrics());
+    final float dp18 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, resources.getDisplayMetrics());
+    final float dp24 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, resources.getDisplayMetrics());
+    final float dp32 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, resources.getDisplayMetrics());
 
     GameLoopThread gameLoopThread;
     private SurfaceHolder holder;
     public static int globalxSpeed = 15;
 
-    //-1 = left
-    //0 = middle
-    //1 = right
+    /* -1 = left; 0 = middle; 1 = right */
     public static int score_position = 0;
     public static int score = 0;
     public static int highscore = 1000;
@@ -56,32 +48,35 @@ public class GameView extends SurfaceView {
 
     public static int timerCoins = 0;
     private static SharedPreferences prefs;
-    private String saveScore = "Highscore";
+    private String saveScore = "High Score";
 
-    Bitmap playerbmp;
-    Bitmap coinbmp;
-    Bitmap groundbmp;
-    Bitmap meteorbmp;
-    Bitmap backgroundbmp;
+    Bitmap playerBMP;
+    Bitmap coinBMP;
+    Bitmap groundBMP;
+    Bitmap meteorBMP;
+    Bitmap backgroundBMP;
     Bitmap resizedBackgroundBMP;
-    Bitmap pausebmp;
+    Bitmap pauseBMP;
 
     private List<Player> player = new ArrayList<Player>();
     private List<Coin> coins = new ArrayList<Coin>();
     private List<Ground> ground = new ArrayList<Ground>();
-    private List<Meteor> meteors = new ArrayList<>();
+    private List<Meteor> meteors = new ArrayList<Meteor>();
+
+    boolean[] leftMeteors = {false, false};
+    boolean[] middleMeteors = {false, false};
+    boolean[] rightMeteors = {false, false};
+
+    int width = screenWidth();
+    int height = screenHeight();
 
     Region pauseRegion;
 
-    boolean[] leftMeteors = new boolean[2];
-    boolean[] middleMeteors = new boolean[2];
-    boolean[] rightMeteors = new boolean[2];
-
-    public GameView (Context context){
+    public GameView (Context context) {
         super(context);
 
         String spackage = "com.nathanwcaldwell.supernova";
-        prefs = context.getSharedPreferences(spackage,context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(spackage, context.MODE_PRIVATE);
 
         highscore = prefs.getInt(saveScore, 0);
 
@@ -103,33 +98,26 @@ public class GameView extends SurfaceView {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-            gameLoopThread.running = false;
+                gameLoopThread.running = false;
                 score = 0;
                 coinsCollected = 0;
 
-            prefs.edit().putInt(saveScore,highscore).commit();
+                prefs.edit().putInt(saveScore,highscore).commit();
             }
         });
 
-        playerbmp = BitmapFactory.decodeResource(getResources(),R.drawable.ship);
-        coinbmp = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
-        meteorbmp = BitmapFactory.decodeResource(getResources(), R.drawable.meteor);
-        groundbmp = BitmapFactory.decodeResource(getResources(), R.drawable.ground);
-        pausebmp = BitmapFactory.decodeResource(getResources(), R.drawable.pause_button);
+        playerBMP = BitmapFactory.decodeResource(getResources(),R.drawable.ship);
+        coinBMP = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
+        meteorBMP = BitmapFactory.decodeResource(getResources(), R.drawable.meteor);
+        groundBMP = BitmapFactory.decodeResource(getResources(), R.drawable.ground);
+        pauseBMP = BitmapFactory.decodeResource(getResources(), R.drawable.pause_button);
 
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
+        backgroundBMP = BitmapFactory.decodeResource(getResources(), R.drawable.planet);
+        resizedBackgroundBMP = Bitmap.createScaledBitmap(backgroundBMP, width, height, false);
 
-        backgroundbmp = BitmapFactory.decodeResource(getResources(),R.drawable.planet);
-        resizedBackgroundBMP = Bitmap.createScaledBitmap(backgroundbmp, width, height, false);
+        player.add(new Player(GameView.this, playerBMP,width/2,(int)(height*1.0/4)));
 
-        player.add(new Player(GameView.this,playerbmp,size.x/2,(int)(size.y*1.0/4)));
-
-        pauseRegion = new Region((int)(this.width()-pausebmp.getWidth()-dp24), 0, (int)(this.width()-pausebmp.getWidth()+dp24), (int)(dp32+16));
+        pauseRegion = new Region((int)(width- pauseBMP.getWidth()-dp24), 0, (int)(width-pauseBMP.getWidth()+dp24), (int)(dp32+16));
 
 //        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.background);
 //        Canvas mCanvas = canvas;
@@ -144,22 +132,22 @@ public class GameView extends SurfaceView {
             @Override
             public void run() {
                 // this code will be executed after 2 seconds
-                coins.add(new Coin(GameView.this, coinbmp,500,200));
-                coins.add(new Coin(GameView.this, coinbmp,550,125));
-                meteors.add(new Meteor(GameView.this, meteorbmp, 450, 300));
+                coins.add(new Coin(GameView.this, coinBMP,500,200));
+                coins.add(new Coin(GameView.this, coinBMP,550,125));
+                meteors.add(new Meteor(GameView.this, meteorBMP, 450, 300));
             }
         }, 5000);
     */
     }
 
-    public int width() {
+    public int screenWidth() {
         Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size.x;
     }
 
-    public int height() {
+    public int screenHeight() {
         Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -172,12 +160,6 @@ public class GameView extends SurfaceView {
         int touch_x = (int)e.getX();
         int touch_y = (int)e.getY();
 
-        //stuff to get the size of the screen in pixels
-        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int disp_width = size.x;
-
         if(pauseRegion.contains((int)touch_x, (int)touch_y))
         {
             gameLoopThread.setRunning(false);
@@ -188,12 +170,12 @@ public class GameView extends SurfaceView {
 
         //determine if the touch was on the left or right hand side of the screen
         boolean left = false;
-        if (touch_x < (disp_width / 2)){
+        if (touch_x < (width / 2)){
             left = true;
         }
 
         for (Player pplayer: player){
-            pplayer.ontouch(left, disp_width);
+            pplayer.ontouch(left, width);
         }
         return false;
     }
@@ -201,112 +183,154 @@ public class GameView extends SurfaceView {
     public void updateScore(){
         if (score_position < 0){
             score += 4;
-        }else if (score_position == 0) {
+        }
+
+        else if (score_position == 0) {
             score += 2;
-        } else if (score_position > 0){
+        }
+
+        else if (score_position > 0) {
             score++;
         }
-        deleteGround();
+
+//        deleteGround();
         updateObstacles();
-        if (score > highscore){
+
+        if (score > highscore) {
          highscore = score;
         }
     }
 
-    public void updateObstacles(){
+    public void updateObstacles() {
         timerCoins++;
-        if (timerCoins == 20) {
-            Random position = new Random();
-            int x = position.nextInt(101);
-            Random item = new Random();
-            int y = item.nextInt(3);
-            int z = 0;
 
-            if (y == 0){
-                z = -GameView.this.getWidth() / 5;
-            }else if (y == 1){
-                z = 0;
-            }else if (y == 2){
-                z = GameView.this.getWidth() / 5;
+        if (timerCoins == 30) {
+            Random position = new Random();
+            int left = position.nextInt(1001);
+            int middle = position.nextInt(1001);
+            int right = position.nextInt(1001);
+
+            Random item = new Random();
+
+//            z = -GameView.this.getWidth() / 5;
+//            z = GameView.this.getWidth() / 5;
+
+            if (left % 3 == 0 && !(middleMeteors[0] || middleMeteors[1])) {
+                meteors.add(new Meteor(GameView.this, meteorBMP, (GameView.this.getWidth()/2) + -GameView.this.getWidth() / 5, 20));
+
+                leftMeteors[0] = leftMeteors[1];
+                leftMeteors[1] = true;
             }
 
-            if (x % 2 == 0){
-                meteors.add(new Meteor(GameView.this, meteorbmp, (GameView.this.getWidth()/2) + z, 20));
-            }else if (x % 9 == 0){
-                coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) + z, 20));
+            else {
+                leftMeteors[0] = leftMeteors[1];
+                leftMeteors[1] = false;
+            }
 
-            }//else if (x == 2){
-//                coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) , 20));
+
+            if (middle % 3 == 0 && !((leftMeteors[0] || leftMeteors[1]) && (rightMeteors[0] || rightMeteors[1]))) {
+                meteors.add(new Meteor(GameView.this, meteorBMP, (GameView.this.getWidth()/2), 20));
+
+                middleMeteors[0] = middleMeteors[1];
+                middleMeteors[1] = true;
+            }
+
+            else {
+                middleMeteors[0] = middleMeteors[1];
+                middleMeteors[1] = false;
+            }
+
+            if (right % 3 == 0 && !(middleMeteors[0] || middleMeteors[1])) {
+                meteors.add(new Meteor(GameView.this, meteorBMP, (GameView.this.getWidth()/2) + GameView.this.getWidth() / 5, 20));
+
+                rightMeteors[0] = rightMeteors[1];
+                rightMeteors[1] = true;
+            }
+
+            else {
+                rightMeteors[0] = rightMeteors[1];
+                rightMeteors[1] = false;
+            }
+
+//            else if (x % 9 == 0){
+//                coins.add(new Coin(GameView.this, coinBMP, (GameView.this.getWidth() / 2) + z, 20));
+//            }
+
+//            else if (x == 2){
+//                coins.add(new Coin(GameView.this, coinBMP, (GameView.this.getWidth() / 2) , 20));
 //            }
 
 
 //            switch (x) {
 //                case (0):
-//                    coins.add(new Coin(GameView.this, coinbmp, GameView.this.getWidth() / 2, 200));
+//                    coins.add(new Coin(GameView.this, coinBMP, GameView.this.getWidth() / 2, 200));
 //
 //                case (1):
-//                    coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) - (GameView.this.getWidth() / 5), 400));
+//                    coins.add(new Coin(GameView.this, coinBMP, (GameView.this.getWidth() / 2) - (GameView.this.getWidth() / 5), 400));
 //
 //                case (2):
-//                    coins.add(new Coin(GameView.this, coinbmp, (GameView.this.getWidth() / 2) + (GameView.this.getWidth() / 5), 600));
+//                    coins.add(new Coin(GameView.this, coinBMP, (GameView.this.getWidth() / 2) + (GameView.this.getWidth() / 5), 600));
 //            }
+
             timerCoins = 0;
         }
     }
 
 
-    public void addGround(){
-
-        while (xx < this.getWidth() + Ground.width){
-            ground.add(new Ground(this, groundbmp,xx, 0));
-            xx += groundbmp.getWidth();
-        }
-    }
-
-    public void deleteGround(){
-        for(int i = ground.size()-1; i >= 0; i--){
-
-            int groundx = ground.get(i).returnX();
-
-            if (groundx <=-Ground.width){
-               ground.remove(i);
-               ground.add(new Ground(this, groundbmp, groundx+this.getWidth()+Ground.width,0));
-            }
-        }
-    }
+//    public void addGround(){
+//
+//        while (xx < this.getWidth() + Ground.width){
+//            ground.add(new Ground(this, groundBMP,xx, 0));
+//            xx += groundBMP.getWidth();
+//        }
+//    }
+//
+//    public void deleteGround(){
+//        for(int i = ground.size()-1; i >= 0; i--){
+//
+//            int groundx = ground.get(i).returnX();
+//
+//            if (groundx <=-Ground.width){
+//               ground.remove(i);
+//               ground.add(new Ground(this, groundBMP, groundx+this.getWidth()+Ground.width,0));
+//            }
+//        }
+//    }
 
     @Override
-    protected void onDraw(Canvas canvas){
+    protected void onDraw(Canvas canvas) {
 
         canvas.drawBitmap(resizedBackgroundBMP, 0, 0, null);
-        canvas.drawBitmap(pausebmp, this.width()-pausebmp.getWidth()-dp16, dp16, null);
+        canvas.drawBitmap(pauseBMP, width - pauseBMP.getWidth() - dp16, dp16, null);
 
         updateScore();
-        //canvas.drawColor(Color.BLUE);
+//        canvas.drawColor(Color.BLUE);
 
-        //addGround();
-      //  deleteGround();
+//        deleteGround();
+//        addGround();
         Paint textpaint = new Paint();
         textpaint.setTextSize(dp18);
         textpaint.setColor(Color.WHITE);
 
         canvas.drawText("Score: " + String.valueOf(score), 0, dp18, textpaint);
-        canvas.drawText("High Score: " + String.valueOf(highscore), 0, 2*dp18, textpaint);
-        canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 3*dp18, textpaint);
+        canvas.drawText("High Score: " + String.valueOf(highscore), 0, 2 * dp18, textpaint);
+        canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 3 * dp18, textpaint);
 
 //        for (Ground gground: ground){
 //            gground.onDraw(canvas);
 //        }
-        for (Player pplayer: player){
+
+        for (Player pplayer : player) {
             pplayer.onDraw(canvas);
         }
-        for (int i = 0; i < meteors.size(); i++){
+
+        for (int i = 0; i < meteors.size(); i++) {
 
             meteors.get(i).onDraw(canvas);
             Rect playerr = player.get(0).GetBounds();
             Rect meteorr = meteors.get(i).GetBounds();
 
-            if (meteors.get(i).checkCollision(playerr, meteorr)){
+            if (meteors.get(i).checkCollision(playerr, meteorr)) {
                 meteors.remove(i);
 
                 score = 1;
@@ -316,19 +340,17 @@ public class GameView extends SurfaceView {
             }
         }
 
-        for (int i = 0; i < coins.size(); i++){
+        for (int i = 0; i < coins.size(); i++) {
 
             coins.get(i).onDraw(canvas);
             Rect playerr = player.get(0).GetBounds();
             Rect coinr = coins.get(i).GetBounds();
 
-            if (coins.get(i).checkCollision(playerr, coinr)){
+            if (coins.get(i).checkCollision(playerr, coinr)) {
                 coins.remove(i);
                 coinsCollected++;
                 score += 250;
             }
         }
     }
-
-
 }
