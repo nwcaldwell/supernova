@@ -24,15 +24,26 @@ public class MercuryActivity extends Activity {
     public void onPause(){
         super.onPause();
 
-        if (gameView != null){
-            if (gameView.gameLoopThread != null){
+        if (gameView != null) {
+            if (gameView.gameLoopThread != null) {
                 gameView.gameLoopThread.running = false;
             }
         }
-
-        finish();
-
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if (gameView != null) {
+            if (gameView.gameLoopThread != null) {
+                gameView.gameLoopThread.running = true;
+//                gameView.gameLoopThread.start();
+            }
+        }
+    }
+
+
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
