@@ -37,7 +37,7 @@ public class GameView extends SurfaceView {
 
     GameLoopThread gameLoopThread;
     private SurfaceHolder holder;
-    public static int globalxSpeed = 15;
+    public static int globalxSpeed = 20;
 
     /* -1 = left; 0 = middle; 1 = right */
     public static int score_position = 0;
@@ -66,6 +66,13 @@ public class GameView extends SurfaceView {
     boolean[] leftMeteors = {false, false};
     boolean[] middleMeteors = {false, false};
     boolean[] rightMeteors = {false, false};
+
+    int left;
+    int middle;
+    int right;
+
+    boolean leftBoolean;
+    boolean rightBoolean;
 
     int width = screenWidth();
     int height = screenHeight();
@@ -209,9 +216,11 @@ public class GameView extends SurfaceView {
         if (timerCoins == 30) {
 
             Random position = new Random();
-            int left = position.nextInt(1001);
-            int middle = position.nextInt(1001);
-            int right = position.nextInt(1001);
+            left = position.nextInt(1001);
+            middle = position.nextInt(1001);
+            right = position.nextInt(1001);
+            leftBoolean = false;
+            rightBoolean = false;
 
             Random item = new Random();
 
@@ -219,11 +228,12 @@ public class GameView extends SurfaceView {
 //            z = -GameView.this.getWidth() / 5;
 //            z = GameView.this.getWidth() / 5;
 
-            if (left % 3 == 0 && !(middleMeteors[0] || middleMeteors[1])) {
+            if (left % 2 == 0 && !((middleMeteors[0] || middleMeteors[1]) && rightBoolean)) {
                 meteors.add(new Meteor(GameView.this, meteorBMP, (GameView.this.getWidth()/2) + -GameView.this.getWidth() / 5, 20));
 
                 leftMeteors[0] = leftMeteors[1];
                 leftMeteors[1] = true;
+                leftBoolean = true;
             }
 
             else {
@@ -232,7 +242,7 @@ public class GameView extends SurfaceView {
             }
 
 
-            if (middle % 3 == 0 && !((leftMeteors[0] || leftMeteors[1]) && (rightMeteors[0] || rightMeteors[1]))) {
+            if (middle % 2 == 0 && !((leftMeteors[0] || leftMeteors[1]) && (rightMeteors[0] || rightMeteors[1]))) {
                 meteors.add(new Meteor(GameView.this, meteorBMP, (GameView.this.getWidth()/2), 20));
 
                 middleMeteors[0] = middleMeteors[1];
@@ -244,11 +254,12 @@ public class GameView extends SurfaceView {
                 middleMeteors[1] = false;
             }
 
-            if (right % 3 == 0 && !(middleMeteors[0] || middleMeteors[1])) {
+            if (right % 2 == 0 && !((middleMeteors[0] || middleMeteors[1]) && leftBoolean)) {
                 meteors.add(new Meteor(GameView.this, meteorBMP, (GameView.this.getWidth()/2) + GameView.this.getWidth() / 5, 20));
 
                 rightMeteors[0] = rightMeteors[1];
                 rightMeteors[1] = true;
+                rightBoolean = true;
             }
 
             else {
@@ -256,6 +267,10 @@ public class GameView extends SurfaceView {
                 rightMeteors[1] = false;
             }
 
+            if (!leftMeteors[1] && !middleMeteors[1] && !rightMeteors[1]) {
+                leftBoolean = false;
+                rightBoolean = false;
+            }
 //            else if (x % 9 == 0){
 //                coins.add(new Coin(GameView.this, coinBMP, (GameView.this.getWidth() / 2) + z, 20));
 //            }

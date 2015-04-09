@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class StoreItemAdapter extends ArrayAdapter<StoreItem> {
+public class TimeItemAdapter extends ArrayAdapter<StoreItem> {
     // declaring our ArrayList of items
     private ArrayList<StoreItem> objects;
 
@@ -24,7 +24,7 @@ public class StoreItemAdapter extends ArrayAdapter<StoreItem> {
     * the only variable we care about now is ArrayList<Item> objects,
     * because it is the list of objects we want to display.
     */
-    public StoreItemAdapter(Context context, int textViewResourceId, ArrayList<StoreItem> objects) {
+    public TimeItemAdapter(Context context, int textViewResourceId, ArrayList<StoreItem> objects) {
         super(context, textViewResourceId, objects);
         this.objects = objects;
     }

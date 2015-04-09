@@ -2,7 +2,9 @@ package com.nathanwcaldwell.supernova;
 
 import android.app.Fragment;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -39,7 +41,9 @@ public class StoreActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
 
-
+        String spackage = "com.nathanwcaldwell.supernova";
+        SharedPreferences prefs = this.getSharedPreferences(spackage, this.MODE_PRIVATE);
+        prefs.edit().putInt("coinsAvailable", 10000000).commit();
         // Creating The Toolbar and setting it as the Toolbar for the activity
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
