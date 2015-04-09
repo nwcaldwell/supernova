@@ -8,15 +8,17 @@ public class StoreItem {
     private String name;
     private int upgradeNumber;
     private int price;
+    private boolean purchased;
 
     public StoreItem() {
 
     }
 
-    public StoreItem(String name, int upgradeNumber, int price) {
+    public StoreItem(String name, int upgradeNumber, int price, boolean purchased) {
         this.name = name;
         this.upgradeNumber = upgradeNumber;
         this.price = price;
+        this.purchased = purchased;
     }
 
     public String getName() {
@@ -41,5 +43,13 @@ public class StoreItem {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public boolean getPurchased() {
+        return purchased;
+    }
+
+    public void setPurchased(boolean purchased) {
+        this.purchased = purchased;
     }
 }

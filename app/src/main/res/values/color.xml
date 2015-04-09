@@ -3,12 +3,13 @@
     <color name="Green">#ffbee6ac</color>
     <color name="Beige">#ffc3be8b</color>
     <color name="Yellow">#ffebe57a</color>
-    <color name="Test">#ff484b89</color>
-    <color name="ColorPrimary">#ff864889</color>
+    <color name="Test">#ffC55F30</color>
+    <color name="ColorPrimary">#ff293E7B</color>
 
     <color name="Tabs">#ffe64b06</color> <!-- ColorPrimary #ffe64b06-->
     <color name="ColorPrimaryDark">#ffe6e430</color>
-    <color name="tabsScrollColor">#ff0014cf</color>
+    <color name="tabsScrollColor">#a2ffffff</color>
     <color name="White">#a2ffffff</color>
+    <color name="Grey">#b0121212</color>
 
 </resources>

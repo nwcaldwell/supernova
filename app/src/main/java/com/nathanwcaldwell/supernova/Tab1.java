@@ -20,7 +20,7 @@ public class Tab1 extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =inflater.inflate(R.layout.tab_1,container,false);
+        View v =inflater.inflate(R.layout.tab,container,false);
 
         // here we are defining our runnable thread.
         viewParts = new Runnable(){
@@ -43,13 +43,13 @@ public class Tab1 extends ListFragment {
             // create some objects
             // here is where you could also request data from a server
             // and then create objects from that data.
-            m_parts.add(new StoreItem("UFO", 0, 10000));
-            m_parts.add(new StoreItem("Jet Pack", 1, 30000));
-            m_parts.add(new StoreItem("Fighter Jet", 2, 50000));
-            m_parts.add(new StoreItem("Rocket", 3, 100000));
-            m_parts.add(new StoreItem("Space Party Bus", 4, 250000));
-            m_parts.add(new StoreItem("Space Shuttle", 5, 500000));
-            m_parts.add(new StoreItem("Space Camel", 6, 1000000));
+            m_parts.add(new StoreItem("UFO", 0, 10000, false));
+            m_parts.add(new StoreItem("Jet Pack", 1, 30000, false));
+            m_parts.add(new StoreItem("Fighter Jet", 2, 50000, false));
+            m_parts.add(new StoreItem("Rocket", 3, 100000, false));
+            m_parts.add(new StoreItem("Space Party Bus", 4, 250000, false));
+            m_parts.add(new StoreItem("Space Shuttle", 5, 500000, false));
+            m_parts.add(new StoreItem("Space Camel", 6, 1000000, false));
 
 
             m_adapter = new StoreItemAdapter(getActivity(), R.layout.store_item, m_parts);
@@ -58,5 +58,4 @@ public class Tab1 extends ListFragment {
             setListAdapter(m_adapter);
         }
     };
-
 }
