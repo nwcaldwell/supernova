@@ -211,7 +211,10 @@ public class GameView extends SurfaceView {
     public void updateObstacles() {
         timerCoins++;
 
+
+
         if (timerCoins == 30) {
+
             Random position = new Random();
             left = position.nextInt(1001);
             middle = position.nextInt(1001);
@@ -220,6 +223,7 @@ public class GameView extends SurfaceView {
             rightBoolean = false;
 
             Random item = new Random();
+
 
 //            z = -GameView.this.getWidth() / 5;
 //            z = GameView.this.getWidth() / 5;
@@ -270,6 +274,7 @@ public class GameView extends SurfaceView {
 //            else if (x % 9 == 0){
 //                coins.add(new Coin(GameView.this, coinBMP, (GameView.this.getWidth() / 2) + z, 20));
 //            }
+
 
 //            else if (x == 2){
 //                coins.add(new Coin(GameView.this, coinBMP, (GameView.this.getWidth() / 2) , 20));
