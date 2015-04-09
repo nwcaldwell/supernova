@@ -89,7 +89,7 @@ public class ShieldItemAdapter extends ArrayAdapter<StoreItem> {
 		 *
 		 * Therefore, i refers to the current Item object.
 		 */
-        StoreItem i = objects.get(position);
+        final StoreItem i = objects.get(position);
         boolean purchased = false;
 
         Log.d("STOREITEM", "position: " + position);
@@ -115,11 +115,9 @@ public class ShieldItemAdapter extends ArrayAdapter<StoreItem> {
                 price.setText(String.valueOf(i.getPrice()));
             }
 
-            int currentUpgrade = prefs.getInt("shieldUpgrade", -1);
-            int cost = Integer.parseInt(price.getText().toString());
-            int coinsAvailable = prefs.getInt("coinsAvailable", 0);
-
             if (type == TYPE_ITEM) {
+
+
                 upgrade_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -131,16 +129,19 @@ public class ShieldItemAdapter extends ArrayAdapter<StoreItem> {
                         if (Integer.parseInt(upgradeNumber.getText().toString()) == currentUpgrade + 1 && coinsAvailable >= cost) {
                             prefs.edit().putInt("shieldUpgrade", currentUpgrade + 1).commit();
                             prefs.edit().putInt("coinsAvailable", coinsAvailable - cost).commit();
+                            i.setPurchased(true);
+                            notifyDataSetChanged();
                             Log.d("ONCLICK", "upgraded " + "available: " + coinsAvailable + "cost: " + cost);
+                            Log.d("ONCLICK", "Shield Upgrade: " + prefs.getInt("sheildUpgrade", -1));
                         }
                     }
                 });
             }
-
-            if (Integer.parseInt(upgradeNumber.getText().toString()) == currentUpgrade + 1 && coinsAvailable >= cost) {
-                i.setPurchased(true);
-                notifyDataSetChanged();
-            }
+//
+//            if (Integer.parseInt(upgradeNumber.getText().toString()) == currentUpgrade + 1 && coinsAvailable >= cost) {
+//                i.setPurchased(true);
+//                notifyDataSetChanged();
+//            }
         }
 
         // the view must be returned to our activity
