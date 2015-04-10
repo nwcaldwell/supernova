@@ -2,6 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="135dp" android:minHeight="100dp" android:background="@color/Test">
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select"
+        android:id="@+id/upgrade_button"
+        android:layout_marginRight="19dp"
+        android:layout_marginEnd="19dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <TextView
         android:id="@+id/name"
         android:textColor="@color/White"
@@ -34,16 +46,5 @@
         android:layout_below="@id/upgradeNumber"
         android:textSize="16sp"
         android:textStyle="bold"/>
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/imageView9"
-        android:src="@drawable/checkmark"
-        android:layout_marginRight="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

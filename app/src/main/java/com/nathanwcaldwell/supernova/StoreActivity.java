@@ -25,7 +25,6 @@ public class StoreActivity extends ActionBarActivity {
     // declare class variables
     private ArrayList<StoreItem> m_parts = new ArrayList<StoreItem>();
     private Runnable viewParts;
-    private StoreItemAdapter m_adapter;
 
     // Declaring Your View and Variables
 
@@ -43,6 +42,7 @@ public class StoreActivity extends ActionBarActivity {
 
         String spackage = "com.nathanwcaldwell.supernova";
         SharedPreferences prefs = this.getSharedPreferences(spackage, this.MODE_PRIVATE);
+
         prefs.edit().putInt("coinsAvailable", 10000000).commit();
         // Creating The Toolbar and setting it as the Toolbar for the activity
 
