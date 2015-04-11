@@ -76,7 +76,7 @@ public class StoreItemAdapter extends ArrayAdapter<StoreItem> {
                 name.setText(i.getName());
             }
             if (upgradeNumber != null){
-                upgradeNumber.setText(String.valueOf(i.getUpgradeNumber()));
+              //  upgradeNumber.setText(String.valueOf(i.getUpgradeNumber()));
             }
             if (price != null){
                 price.setText(String.valueOf(i.getPrice()));
