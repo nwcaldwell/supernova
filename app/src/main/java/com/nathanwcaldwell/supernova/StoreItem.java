@@ -6,19 +6,16 @@ package com.nathanwcaldwell.supernova;
 public class StoreItem {
 
     private String name;
-    private int upgradeNumber;
     private int price;
-    private boolean purchased;
+//    private boolean purchased;
 
     public StoreItem() {
 
     }
 
-    public StoreItem(String name, int upgradeNumber, int price, boolean purchased) {
+    public StoreItem(String name, int upgradeNumber, int price) {
         this.name = name;
-        this.upgradeNumber = upgradeNumber;
         this.price = price;
-        this.purchased = purchased;
     }
 
     public String getName() {
@@ -29,14 +26,6 @@ public class StoreItem {
         this.name = name;
     }
 
-    public int getUpgradeNumber() {
-        return upgradeNumber;
-    }
-
-    public void setUpgradeNumber(int upgradeNumber) {
-        this.upgradeNumber = upgradeNumber;
-    }
-
     public int getPrice() {
         return price;
     }
@@ -45,11 +34,11 @@ public class StoreItem {
         this.price = price;
     }
 
-    public boolean getPurchased() {
-        return purchased;
-    }
-
-    public void setPurchased(boolean purchased) {
-        this.purchased = purchased;
-    }
+//    public boolean getPurchased() {
+//        return purchased;
+//    }
+//
+//    public void setPurchased(boolean purchased) {
+//        this.purchased = purchased;
+//    }
 }

@@ -37,13 +37,13 @@ public class ShieldItemAdapter extends ArrayAdapter<StoreItem> {
 
     @Override
     public int getItemViewType(int position) {
-        int shieldUpgrade = prefs.getInt("sheildUpgrade", -1);
-        StoreItem i = objects.get(position);
-        if (position <= shieldUpgrade || i.getPurchased()) {
+        boolean upgraded = prefs.getBoolean("shield" + String.valueOf(position), false);
+
+        if (upgraded) {
             return TYPE_PURCHASED;
         }
 
-        else if (position == shieldUpgrade + 1) {
+        else if (position == 0 || getItemViewType(position-1) == TYPE_PURCHASED) {
             return TYPE_ITEM;
         }
 
@@ -64,6 +64,8 @@ public class ShieldItemAdapter extends ArrayAdapter<StoreItem> {
         // assign the view we are converting to a local variable
         View v = convertView;
         int type = getItemViewType(position);
+        final int pos = position;
+
 
         // first check to see if the view is null. if so, we have to inflate it.
         // to inflate it basically means to render, or show, the view.
@@ -89,17 +91,15 @@ public class ShieldItemAdapter extends ArrayAdapter<StoreItem> {
 		 *
 		 * Therefore, i refers to the current Item object.
 		 */
-        StoreItem i = objects.get(position);
+        final StoreItem i = objects.get(position);
         boolean purchased = false;
 
-        Log.d("STOREITEM", "position: " + position);
         if (i != null) {
 
             // This is how you obtain a reference to the TextViews.
             // These TextViews are created in the XML files we defined.
 
             final TextView name = (TextView) v.findViewById(R.id.name);
-            final TextView upgradeNumber = (TextView) v.findViewById(R.id.upgradeNumber);
             final TextView price = (TextView) v.findViewById(R.id.price);
             final Button upgrade_button = (Button) v.findViewById(R.id.upgrade_button);
 
@@ -108,38 +108,26 @@ public class ShieldItemAdapter extends ArrayAdapter<StoreItem> {
             if (name != null) {
                 name.setText(i.getName());
             }
-            if (upgradeNumber != null) {
-                upgradeNumber.setText(String.valueOf(i.getUpgradeNumber()));
-            }
             if (price != null) {
                 price.setText(String.valueOf(i.getPrice()));
             }
 
-            int currentUpgrade = prefs.getInt("shieldUpgrade", -1);
-            int cost = Integer.parseInt(price.getText().toString());
-            int coinsAvailable = prefs.getInt("coinsAvailable", 0);
-
             if (type == TYPE_ITEM) {
+
+
                 upgrade_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int currentUpgrade = prefs.getInt("shieldUpgrade", -1);
                         int cost = Integer.parseInt(price.getText().toString());
                         int coinsAvailable = prefs.getInt("coinsAvailable", 0);
-                        Log.d("ONCLICK", "Clicked " + "available: " + coinsAvailable + "cost: " + cost + "upgradeNum: " + Integer.parseInt(upgradeNumber.getText().toString()) + "currentUpgrade: " + currentUpgrade);
 
-                        if (Integer.parseInt(upgradeNumber.getText().toString()) == currentUpgrade + 1 && coinsAvailable >= cost) {
-                            prefs.edit().putInt("shieldUpgrade", currentUpgrade + 1).commit();
-                            prefs.edit().putInt("coinsAvailable", coinsAvailable - cost).commit();
-                            Log.d("ONCLICK", "upgraded " + "available: " + coinsAvailable + "cost: " + cost);
+                        if (coinsAvailable >= cost) {
+                            prefs.edit().putBoolean("shield" + pos, true).commit();
+                            prefs.edit().putInt("coinsAvailable", coinsAvailable-cost).commit();
+                            notifyDataSetChanged();
                         }
                     }
                 });
-            }
-
-            if (Integer.parseInt(upgradeNumber.getText().toString()) == currentUpgrade + 1 && coinsAvailable >= cost) {
-                i.setPurchased(true);
-                notifyDataSetChanged();
             }
         }
 

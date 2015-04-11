@@ -2,6 +2,7 @@ package com.nathanwcaldwell.supernova;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,11 @@ import java.util.ArrayList;
 public class WarpItemAdapter extends ArrayAdapter<StoreItem> {
     // declaring our ArrayList of items
     private ArrayList<StoreItem> objects;
+
+    private static final int TYPE_PURCHASED = 0;
+    private static final int TYPE_ITEM = 1;
+    private static final int TYPE_LOCKED = 2;
+    private static final int TYPE_MAX_COUNT = 3;
 
     Context context = getContext();
 
@@ -29,6 +35,26 @@ public class WarpItemAdapter extends ArrayAdapter<StoreItem> {
         this.objects = objects;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        boolean upgraded = prefs.getBoolean("warp" + String.valueOf(position), false);
+
+        if (upgraded) {
+            return TYPE_PURCHASED;
+        }
+
+        else if (position == 0 || getItemViewType(position-1) == TYPE_PURCHASED) {
+            return TYPE_ITEM;
+        }
+
+        return TYPE_LOCKED;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return TYPE_MAX_COUNT;
+    }
+
     /*
      * we are overriding the getView method here - this is what defines how each
      * list item will look.
@@ -37,12 +63,25 @@ public class WarpItemAdapter extends ArrayAdapter<StoreItem> {
 
         // assign the view we are converting to a local variable
         View v = convertView;
+        int type = getItemViewType(position);
+        final int pos = position;
+
 
         // first check to see if the view is null. if so, we have to inflate it.
         // to inflate it basically means to render, or show, the view.
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.store_item, null);
+            switch (type) {
+                case TYPE_PURCHASED:
+                    v = inflater.inflate(R.layout.store_purchased_item, null);
+                    break;
+                case TYPE_ITEM:
+                    v = inflater.inflate(R.layout.store_item, null);
+                    break;
+                case TYPE_LOCKED:
+                    v = inflater.inflate(R.layout.store_locked_item, null);
+                    break;
+            }
         }
 
 		/*
@@ -52,34 +91,45 @@ public class WarpItemAdapter extends ArrayAdapter<StoreItem> {
 		 *
 		 * Therefore, i refers to the current Item object.
 		 */
-        StoreItem i = objects.get(position);
+        final StoreItem i = objects.get(position);
+        boolean purchased = false;
 
+        Log.d("STOREITEM", "position: " + position);
         if (i != null) {
 
             // This is how you obtain a reference to the TextViews.
             // These TextViews are created in the XML files we defined.
 
-            TextView name = (TextView) v.findViewById(R.id.name);
-            TextView upgradeNumber = (TextView) v.findViewById(R.id.upgradeNumber);
-            TextView price = (TextView) v.findViewById(R.id.price);
-            Button upgrade_button = (Button) v.findViewById(R.id.upgrade_button);
-
-            upgrade_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
+            final TextView name = (TextView) v.findViewById(R.id.name);
+            final TextView upgradeNumber = (TextView) v.findViewById(R.id.upgradeNumber);
+            final TextView price = (TextView) v.findViewById(R.id.price);
+            final Button upgrade_button = (Button) v.findViewById(R.id.upgrade_button);
 
             // check to see if each individual textview is null.
             // if not, assign some text!
-            if (name != null){
+            if (name != null) {
                 name.setText(i.getName());
             }
-            if (upgradeNumber != null){
-                upgradeNumber.setText(String.valueOf(i.getUpgradeNumber()));
-            }
-            if (price != null){
+            if (price != null) {
                 price.setText(String.valueOf(i.getPrice()));
+            }
+
+            if (type == TYPE_ITEM) {
+
+
+                upgrade_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int cost = Integer.parseInt(price.getText().toString());
+                        int coinsAvailable = prefs.getInt("coinsAvailable", 0);
+
+                        if (coinsAvailable >= cost) {
+                            prefs.edit().putBoolean("warp" + pos, true).commit();
+                            prefs.edit().putInt("coinsAvailable", coinsAvailable-cost).commit();
+                            notifyDataSetChanged();
+                        }
+                    }
+                });
             }
         }
 
