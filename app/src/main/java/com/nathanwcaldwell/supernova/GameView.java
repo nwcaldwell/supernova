@@ -320,6 +320,11 @@ public class GameView extends SurfaceView {
     @Override
     protected void onDraw(Canvas canvas) {
 
+        if (score > 1000){
+            Intent intent = new Intent(this.getContext(), LevelCompleteActivity.class);
+            this.getContext().startActivity(intent);
+        }
+
         canvas.drawBitmap(resizedBackgroundBMP, 0, 0, null);
         canvas.drawBitmap(pauseBMP, width - pauseBMP.getWidth() - dp16, dp16, null);
 
