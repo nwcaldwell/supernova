@@ -37,13 +37,18 @@ public class GameView extends SurfaceView {
 
     GameLoopThread gameLoopThread;
     private SurfaceHolder holder;
-    public static int globalxSpeed = 20;
+    public static int globalxSpeed = 12;
 
     /* -1 = left; 0 = middle; 1 = right */
     public static int score_position = 0;
     public static int score = 0;
+    public static double score_percent;
+    public static int game_over_score = 1000;
+    public static int time_to_supernova = 10;
+    public static int og_time_to_supernova = 10;
     public static int highscore = 1000;
     public static int coinsCollected = 0;
+    private int counter = 0;
     int xx = 0;
 
     public static int timerCoins = 0;
@@ -67,9 +72,7 @@ public class GameView extends SurfaceView {
     boolean[] middleMeteors = {false, false};
     boolean[] rightMeteors = {false, false};
 
-    int left;
-    int middle;
-    int right;
+    int left, middle, right;
 
     boolean leftBoolean;
     boolean rightBoolean;
@@ -78,6 +81,11 @@ public class GameView extends SurfaceView {
     int height = screenHeight();
 
     Region pauseRegion;
+
+    public void setGame_over_score(int score){
+        game_over_score = score;
+    }
+
 
     public GameView (Context context) {
         super(context);
@@ -126,11 +134,6 @@ public class GameView extends SurfaceView {
 
         pauseRegion = new Region((int)(width- pauseBMP.getWidth()-dp24), 0, (int)(width-pauseBMP.getWidth()+dp24), (int)(dp32+16));
 
-//        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.background);
-//        Canvas mCanvas = canvas;
-//        if (mBitmap != null) {
-//            mCanvas.drawBitmap(mBitmap, 0, 0, null);
-//        }
 
 /*
         Timer time = new Timer();
@@ -188,6 +191,10 @@ public class GameView extends SurfaceView {
     }
 
     public void updateScore(){
+        counter++;
+        if (counter % 60 == 0){
+            time_to_supernova--;
+        }
         if (score_position < 0){
             score += 4;
         }
@@ -213,7 +220,7 @@ public class GameView extends SurfaceView {
 
 
 
-        if (timerCoins == 30) {
+        if (timerCoins == 50) {
 
             Random position = new Random();
             left = position.nextInt(1001);
@@ -320,61 +327,75 @@ public class GameView extends SurfaceView {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        if (score > 1000){
+        if (score > game_over_score) {
+            counter = 0;
+            time_to_supernova = og_time_to_supernova;
+            gameLoopThread.setRunning(false);
             Intent intent = new Intent(this.getContext(), LevelCompleteActivity.class);
             this.getContext().startActivity(intent);
-        }
 
-        canvas.drawBitmap(resizedBackgroundBMP, 0, 0, null);
-        canvas.drawBitmap(pauseBMP, width - pauseBMP.getWidth() - dp16, dp16, null);
+        } else if (time_to_supernova == 0){
+            counter = 0;
+            time_to_supernova = og_time_to_supernova;
+            gameLoopThread.setRunning(false);
+            Intent intent = new Intent(this.getContext(), GameOverActivity.class);
+            this.getContext().startActivity(intent);
+        } else {
 
-        updateScore();
-//        canvas.drawColor(Color.BLUE);
+            canvas.drawBitmap(resizedBackgroundBMP, 0, 0, null);
+            canvas.drawBitmap(pauseBMP, width - pauseBMP.getWidth() - dp16, dp16, null);
+
+            updateScore();
 
 //        deleteGround();
 //        addGround();
-        Paint textpaint = new Paint();
-        textpaint.setTextSize(dp18);
-        textpaint.setColor(Color.WHITE);
+            Paint textpaint = new Paint();
+            textpaint.setTextSize(dp18);
+            textpaint.setColor(Color.WHITE);
 
-        canvas.drawText("Score: " + String.valueOf(score), 0, dp18, textpaint);
-        canvas.drawText("High Score: " + String.valueOf(highscore), 0, 2 * dp18, textpaint);
-        canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 3 * dp18, textpaint);
+            score_percent = ((double) score / (double) game_over_score) * 100;
+            score_percent = Math.round(score_percent * 100);
+            score_percent = score_percent / 100;
 
-//        for (Ground gground: ground){
-//            gground.onDraw(canvas);
-//        }
+            canvas.drawText("Completion Percentage: " + String.valueOf(score_percent) + "%", 0, dp18, textpaint);
+            canvas.drawText("High Score: " + String.valueOf(highscore), 0, 2 * dp18, textpaint);
+            canvas.drawText("Coins: " + String.valueOf(coinsCollected), 0, 3 * dp18, textpaint);
+            canvas.drawText("Time to SuperNova: " + String.valueOf(time_to_supernova) + " sec",0,4 * dp18, textpaint);
 
-        for (Player pplayer : player) {
-            pplayer.onDraw(canvas);
-        }
-
-        for (int i = 0; i < meteors.size(); i++) {
-
-            meteors.get(i).onDraw(canvas);
-            Rect playerr = player.get(0).GetBounds();
-            Rect meteorr = meteors.get(i).GetBounds();
-
-            if (meteors.get(i).checkCollision(playerr, meteorr)) {
-                meteors.remove(i);
-
-                score = 1;
-                gameLoopThread.setRunning(false);
-                Intent intent = new Intent(this.getContext(), GameOverActivity.class);
-                this.getContext().startActivity(intent);
+            for (Player pplayer : player) {
+                pplayer.onDraw(canvas);
             }
-        }
 
-        for (int i = 0; i < coins.size(); i++) {
+            for (int i = 0; i < meteors.size(); i++) {
 
-            coins.get(i).onDraw(canvas);
-            Rect playerr = player.get(0).GetBounds();
-            Rect coinr = coins.get(i).GetBounds();
+                meteors.get(i).onDraw(canvas);
+                Rect playerr = player.get(0).GetBounds();
+                Rect meteorr = meteors.get(i).GetBounds();
 
-            if (coins.get(i).checkCollision(playerr, coinr)) {
-                coins.remove(i);
-                coinsCollected++;
-                score += 250;
+                if (meteors.get(i).checkCollision(playerr, meteorr)) {
+                    meteors.remove(i);
+
+                    score = 1;
+
+                    counter = 0;
+                    time_to_supernova = og_time_to_supernova;
+                    gameLoopThread.setRunning(false);
+                    Intent intent = new Intent(this.getContext(), GameOverActivity.class);
+                    this.getContext().startActivity(intent);
+                }
+            }
+
+            for (int i = 0; i < coins.size(); i++) {
+
+                coins.get(i).onDraw(canvas);
+                Rect playerr = player.get(0).GetBounds();
+                Rect coinr = coins.get(i).GetBounds();
+
+                if (coins.get(i).checkCollision(playerr, coinr)) {
+                    coins.remove(i);
+                    coinsCollected++;
+                    score += 250;
+                }
             }
         }
     }
