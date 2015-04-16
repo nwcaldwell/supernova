@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,7 +27,7 @@ public class MercuryActivity extends Activity {
 
         if (gameView != null) {
             if (gameView.gameLoopThread != null) {
-                gameView.gameLoopThread.running = false;
+//                gameView.gameLoopThread.running = false;
             }
         }
     }
@@ -35,9 +36,10 @@ public class MercuryActivity extends Activity {
     public void onResume(){
         super.onResume();
 
+
         if (gameView != null) {
             if (gameView.gameLoopThread != null) {
-                gameView.gameLoopThread.running = true;
+//                gameView.gameLoopThread.running = true;
 //                gameView.gameLoopThread.start();
             }
         }

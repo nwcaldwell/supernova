@@ -12,12 +12,15 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,8 @@ public class GameView extends SurfaceView {
     /* -1 = left; 0 = middle; 1 = right */
     public static int score_position = 0;
     public static int score = 0;
-    public static int highscore = 1000;
+    public static int highscore = 0;
+    public static int initialHighscore = 0;
     public static int coinsCollected = 0;
     int xx = 0;
 
@@ -85,17 +89,19 @@ public class GameView extends SurfaceView {
         String spackage = "com.nathanwcaldwell.supernova";
         prefs = context.getSharedPreferences(spackage, context.MODE_PRIVATE);
 
-        highscore = prefs.getInt(saveScore, 0);
-
-        gameLoopThread = new GameLoopThread(this);
+        initialHighscore = prefs.getInt(saveScore, 0);
+        highscore = initialHighscore;
 
         holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                gameLoopThread.setRunning(true);
-                gameLoopThread.start();
-
+                if (!MyApplication.isPauseOrGameOverOrLevelCompleteVisible()) {
+                    score = 0;
+                    gameLoopThread = new GameLoopThread(GameView.this);
+                    gameLoopThread.setRunning(true);
+                    gameLoopThread.start();
+                }
             }
 
             @Override
@@ -106,10 +112,6 @@ public class GameView extends SurfaceView {
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 gameLoopThread.running = false;
-                score = 0;
-                coinsCollected = 0;
-
-                prefs.edit().putInt(saveScore,highscore).commit();
             }
         });
 
@@ -170,6 +172,17 @@ public class GameView extends SurfaceView {
         if(pauseRegion.contains((int)touch_x, (int)touch_y))
         {
             gameLoopThread.setRunning(false);
+            gameLoopThread.setmMode(GameLoopThread.STATE_PAUSED);
+
+//            Gson gson = new Gson();
+//                for (int i = 0; i < meteors.size(); i++) {
+//                    String json = gson.toJson(meteors.get(i));
+//                    prefs.edit().putString("meteors" + i, json).commit();
+//                }
+//
+//                meteors.clear();
+//                coins.clear();
+
             Intent intent = new Intent(this.getContext(), PauseActivity.class);
             this.getContext().startActivity(intent);
 
@@ -204,7 +217,7 @@ public class GameView extends SurfaceView {
         updateObstacles();
 
         if (score > highscore) {
-         highscore = score;
+            highscore = score;
         }
     }
 
@@ -319,10 +332,8 @@ public class GameView extends SurfaceView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         canvas.drawBitmap(resizedBackgroundBMP, 0, 0, null);
         canvas.drawBitmap(pauseBMP, width - pauseBMP.getWidth() - dp16, dp16, null);
-
         updateScore();
 //        canvas.drawColor(Color.BLUE);
 
@@ -345,15 +356,15 @@ public class GameView extends SurfaceView {
         }
 
         for (int i = 0; i < meteors.size(); i++) {
-
             meteors.get(i).onDraw(canvas);
             Rect playerr = player.get(0).GetBounds();
             Rect meteorr = meteors.get(i).GetBounds();
 
             if (meteors.get(i).checkCollision(playerr, meteorr)) {
                 meteors.remove(i);
-
-                score = 1;
+                if (highscore > initialHighscore) {
+                    prefs.edit().putInt(saveScore,highscore).commit();
+                }
                 gameLoopThread.setRunning(false);
                 Intent intent = new Intent(this.getContext(), GameOverActivity.class);
                 this.getContext().startActivity(intent);
@@ -361,7 +372,6 @@ public class GameView extends SurfaceView {
         }
 
         for (int i = 0; i < coins.size(); i++) {
-
             coins.get(i).onDraw(canvas);
             Rect playerr = player.get(0).GetBounds();
             Rect coinr = coins.get(i).GetBounds();

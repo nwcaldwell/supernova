@@ -40,8 +40,27 @@ public class PauseActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        MyApplication.PauseOrGameOverOrLevelCompleteResumed();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        MyApplication.PauseOrGameOverOrLevelCompletePaused();
+    }
+
     public void goToMainActivity(View v) {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToMercuryActivity(View v) {
+        Intent intent = new Intent(this, MercuryActivity.class);
         startActivity(intent);
     }
 
