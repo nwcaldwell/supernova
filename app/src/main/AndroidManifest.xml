@@ -28,6 +28,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".LevelCompleteActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".StoreActivity"
             android:screenOrientation="portrait" >
         </activity>
