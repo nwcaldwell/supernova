@@ -17,7 +17,7 @@
 
 
         <Button
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="HOME"
             android:id="@+id/button7"
@@ -28,7 +28,7 @@
             android:onClick="goToMainActivity"/>
 
         <Button
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="RETRY"
             android:id="@+id/button8"

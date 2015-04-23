@@ -50,9 +50,9 @@ public class GameView extends SurfaceView {
     public static int initialHighscore = 0;
 
     public static double score_percent;
-    public static int game_over_score = 1000;
-    public static int time_to_supernova = 10;
-    public static int og_time_to_supernova = 10;
+    public static int game_over_score = 1700;
+    public static int time_to_supernova = 15;
+    public static int og_time_to_supernova = 15;
 
     public static int coinsCollected = 0;
     private int counter = 0;
@@ -126,7 +126,18 @@ public class GameView extends SurfaceView {
             }
         });
 
-        playerBMP = BitmapFactory.decodeResource(getResources(),R.drawable.ship);
+        switch(prefs.getInt("selected", -1)) {
+            case 0:
+                playerBMP = BitmapFactory.decodeResource(getResources(),R.drawable.ship);
+                break;
+            case 1:
+                playerBMP = BitmapFactory.decodeResource(getResources(),R.drawable.jet_pack);
+                break;
+            default:
+                playerBMP = BitmapFactory.decodeResource(getResources(),R.drawable.ship);
+                break;
+        }
+
         coinBMP = BitmapFactory.decodeResource(getResources(), R.drawable.coin);
         meteorBMP = BitmapFactory.decodeResource(getResources(), R.drawable.meteor);
         groundBMP = BitmapFactory.decodeResource(getResources(), R.drawable.ground);
@@ -180,14 +191,14 @@ public class GameView extends SurfaceView {
             gameLoopThread.setRunning(false);
             gameLoopThread.setmMode(GameLoopThread.STATE_PAUSED);
 
-//            Gson gson = new Gson();
-//                for (int i = 0; i < meteors.size(); i++) {
-//                    String json = gson.toJson(meteors.get(i));
-//                    prefs.edit().putString("meteors" + i, json).commit();
-//                }
-//
-//                meteors.clear();
-//                coins.clear();
+            Gson gson = new Gson();
+                for (int i = 0; i < meteors.size(); i++) {
+                    String json = gson.toJson(meteors.get(i));
+                    prefs.edit().putString("meteors" + i, json).commit();
+                }
+
+                meteors.clear();
+                coins.clear();
 
             Intent intent = new Intent(this.getContext(), PauseActivity.class);
             this.getContext().startActivity(intent);

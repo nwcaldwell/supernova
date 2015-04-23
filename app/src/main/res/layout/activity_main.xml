@@ -11,33 +11,24 @@
         android:layout_height="wrap_content"
         android:text="Play!"
         android:id="@+id/button"
-        android:layout_marginBottom="13dp"
-        android:layout_above="@+id/button2"
-        android:layout_centerHorizontal="true"
-        android:onClick="goToMercuryActivity"/>
+        android:onClick="goToMercuryActivity"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="96dp"
+        android:layout_marginBottom="40dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Store"
         android:id="@+id/button2"
-        android:layout_marginBottom="36dp"
+        android:onClick="goToStoreActivity"
+        android:layout_marginLeft="29dp"
+        android:layout_marginStart="29dp"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/button"
-        android:layout_toStartOf="@+id/button"
-        android:onClick="goToStoreActivity"/>
-
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="High Scores"
-        android:id="@+id/button3"
-        android:layout_alignTop="@+id/button2"
-        android:layout_toRightOf="@+id/button"
-        android:layout_toEndOf="@+id/button"
-        android:onClick="goToHighScoresActivity"/>
-
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="96dp"
+        android:layout_marginBottom="40dp"/>
 
     <HorizontalScrollView
         android:layout_width="fill_parent"

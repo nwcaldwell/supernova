@@ -47,6 +47,11 @@ public class LevelCompleteActivity extends Activity {
         startActivity(intent);
     }
 
+    public void goToMercuryActivity(View v) {
+        Intent intent = new Intent(this, MercuryActivity.class);
+        startActivity(intent);
+    }
+
     public void goToStoreActivity(View v){
         Intent intent = new Intent(this, StoreActivity.class);
         startActivity(intent);
